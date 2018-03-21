@@ -1,0 +1,62 @@
+version: '3.5'
+
+services:
+  http-server:
+    # pull image of app from Docker public registry
+    image: ogalaemmanuel/devops:exam
+    # build: .
+    deploy:
+      # Run 5 instances of the image as a service caled http-server
+      # limit each service to use at most 20% of the cpu across all cores
+      # use 400mb of RAM
+      replicas: 5
+      resources:
+        limits:
+          cpus: "0.4"
+          memory: 400M
+      restart_policy:
+        # Restart immediatly if one fails
+        condition: on-failure
+    ports:
+      # Expose ports 3000
+      - "3000:3000"
+    links:
+      # Link both redis master and slave
+      - redis-master
+      - redis-slave
+    depends_on:
+      - redis-master
+      - redis-slave
+    networks:
+      - webnet
+
+  redis-master:
+    image: redis:4.0.8
+    deploy:
+      replicas: 5
+    expose:
+      - 6379
+    entrypoint:
+      - redis-server
+      - --loglevel
+      - verbose
+    networks:
+      - webnet
+
+  redis-slave:
+    image: redis:4.0.8
+    deploy:
+      replicas: 5
+    expose:
+      - 6379
+    entrypoint:
+      - redis-server
+      - --slaveof
+      - redis-master
+      - "6379"
+      - --loglevel
+      - verbose
+    networks:
+      - webnet
+networks:
+  webnet:
