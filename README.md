@@ -6,6 +6,11 @@ This project uses Docker Swan to stage a Go application with two Redis (master a
 1. Have Docker installed
 2. Ability to execute sh and or Bash scripts
 ### Deployment
-    git clone 
+```
+    git clone https://github.com/Ogala/docker.git
     cd docker
     sh ./execute.sh
+```
+## Rational
+This project was implemented using docker compose and docker swarn, deploying five instance of the service through an executable shell script.
+I went with docker because of ease of use and familiarity with the technology. Its simplicity also enhanced my decision to use docker implementation.
